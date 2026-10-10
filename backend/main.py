@@ -1,29 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import roles
+from app.routers import roles, users
 
 app = FastAPI(
     title="BioCompost API",
-    description="API REST para la gestión y trazabilidad de compostaje agrícola",
-    version="1.0.0"
+    version="1.0.0",
+    description="API backend para la gestión del proyecto BioCompost"
 )
 
-# Configuración de CORS para conexión con el Frontend
+# Configuración de CORS para permitir solicitudes desde el Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Puedes restringirlo luego a dominios específicos
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Incluir routers de la API
+# Registrar los routers de la aplicación
 app.include_router(roles.router)
+app.include_router(users.router)
 
-@app.get("/", tags=["Health Check"])
-def read_root():
-    return {
-        "status": "online",
-        "system": "BioCompost API REST",
-        "documentation": "/docs"
-    }
+@app.get("/", tags=["Root"])
+def root():
+    return {"message": "Bienvenido a la API de BioCompost en funcionamiento"}
